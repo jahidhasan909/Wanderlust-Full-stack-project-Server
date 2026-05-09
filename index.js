@@ -1,11 +1,14 @@
 const express = require('express')
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express()
+const cors=require('cors')
 require('dotenv').config()
 const PORT = process.env.PORT
 const uri = process.env.MONGODB_URI
 
 
+app.use(cors())
+app.use(express.json())
 
 const client = new MongoClient(uri, {
     serverApi: {
@@ -21,7 +24,19 @@ const run = async () => {
 
         await client.connect();
         await client.db('admin').command({ ping: 1 })
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+       
+        const database=client.db('wanderlust')
+        const wanderlustcollaction=database.collection('wanderlustcollaction')
+
+
+        app.post('/destination',async(req,res)=>{
+            const docs=req.body
+            console.log('after data recive body',docs);
+            
+            const result=await wanderlustcollaction.insertOne(docs)
+            res.send(result)
+        })
+
         
     } finally {
         //    await client.close()
