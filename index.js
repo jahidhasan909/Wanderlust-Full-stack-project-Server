@@ -1,5 +1,5 @@
 const express = require('express')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const cors = require('cors')
 require('dotenv').config()
@@ -40,6 +40,15 @@ const run = async () => {
         app.get('/destination', async (req, res) => {
             const cursor = await wanderlustcollaction.find().toArray()
             res.send(cursor)
+        })
+
+        app.get('/destination/:id', async (req, res) => {
+            const id = req.params.id
+            const query = {
+                _id: new ObjectId(id)
+            }
+            const result = await wanderlustcollaction.findOne(query)
+            res.send(result)
         })
 
 
