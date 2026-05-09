@@ -1,7 +1,7 @@
 const express = require('express')
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express()
-const cors=require('cors')
+const cors = require('cors')
 require('dotenv').config()
 const PORT = process.env.PORT
 const uri = process.env.MONGODB_URI
@@ -24,20 +24,25 @@ const run = async () => {
 
         await client.connect();
         await client.db('admin').command({ ping: 1 })
-       
-        const database=client.db('wanderlust')
-        const wanderlustcollaction=database.collection('wanderlustcollaction')
+
+        const database = client.db('wanderlust')
+        const wanderlustcollaction = database.collection('wanderlustcollaction')
 
 
-        app.post('/destination',async(req,res)=>{
-            const docs=req.body
-            console.log('after data recive body',docs);
-            
-            const result=await wanderlustcollaction.insertOne(docs)
+        app.post('/destination', async (req, res) => {
+            const docs = req.body
+            console.log('after data recive body', docs);
+
+            const result = await wanderlustcollaction.insertOne(docs)
             res.send(result)
         })
 
-        
+        app.get('/destination', async (req, res) => {
+            const cursor = await wanderlustcollaction.find().toArray()
+            res.send(cursor)
+        })
+
+
     } finally {
         //    await client.close()
     }
