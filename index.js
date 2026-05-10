@@ -31,7 +31,7 @@ const run = async () => {
 
         app.post('/destination', async (req, res) => {
             const docs = req.body
-            
+
 
             const result = await wanderlustcollaction.insertOne(docs)
             res.send(result)
@@ -57,9 +57,18 @@ const run = async () => {
                 _id: new ObjectId(id)
             }
             const docs = req.body
-            
-            const result = await wanderlustcollaction.updateOne(filter, {$set:docs})
-          
+
+            const result = await wanderlustcollaction.updateOne(filter, { $set: docs })
+
+            res.send(result)
+        })
+
+        app.delete('/destination/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = {
+                _id: new ObjectId(id)
+            }
+            const result = await wanderlustcollaction.deleteOne(filter)
             res.send(result)
         })
 
