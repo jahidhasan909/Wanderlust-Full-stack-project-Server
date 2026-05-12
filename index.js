@@ -67,8 +67,23 @@ const run = async () => {
 
         app.post('/booking', async (req, res) => {
             const docs = req.body
-          
+
             const result = await wanderlustBooking.insertOne(docs)
+            res.send(result)
+        })
+
+        app.get('/booking/:userId', async (req, res) => {
+            const { userId } = req.params
+            const result = await wanderlustBooking.find({ userId: userId }).toArray()
+            res.send(result)
+        })
+
+        app.delete('/booking/:bookingId',async(req,res)=>{
+            const {bookingId}=req.params
+            const filter={
+                _id:new ObjectId(bookingId)
+            }
+            const result=await wanderlustBooking.deleteOne(filter)
             res.send(result)
         })
 
