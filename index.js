@@ -27,6 +27,7 @@ const run = async () => {
 
         const database = client.db('wanderlust')
         const wanderlustcollaction = database.collection('wanderlustcollaction')
+        const wanderlustBooking = database.collection('booking')
 
 
         app.post('/destination', async (req, res) => {
@@ -60,6 +61,14 @@ const run = async () => {
 
             const result = await wanderlustcollaction.updateOne(filter, { $set: docs })
 
+            res.send(result)
+        })
+
+
+        app.post('/booking', async (req, res) => {
+            const docs = req.body
+          
+            const result = await wanderlustBooking.insertOne(docs)
             res.send(result)
         })
 
