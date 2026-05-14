@@ -1,7 +1,8 @@
 const express = require('express')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
-const cors = require('cors')
+const cors = require('cors');
+const { createRemoteJWKSet, jwtVerify } = require('jose-cjs');
 require('dotenv').config()
 const PORT = process.env.PORT
 const uri = process.env.MONGODB_URI
@@ -17,6 +18,36 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
+
+
+const jWKS = createRemoteJWKSet(
+    new URL('http://localhost:3000/api/auth/jwks')
+)
+
+const vrifyToken = async (req, res, next) => {
+
+    const authHader = req?.headers.authorization
+    if (!authHader) {
+        return res.status(401).json({ meassage: 'unauthorizte' })
+    }
+    const token = authHader.split(" ")[1]
+    if (!token) {
+        return res.status(403).json({ meassage: 'unauthorizte' })
+    }
+
+
+    try {
+        const { payload } = await jwtVerify(token, jWKS)
+        console.log(payload);
+
+        next()
+    } catch (e) {
+        return res.status(401).json({ meassage: 'Forbiden' })
+    }
+
+}
+
+
 
 
 const run = async () => {
@@ -43,7 +74,7 @@ const run = async () => {
             res.send(cursor)
         })
 
-        app.get('/destination/:id', async (req, res) => {
+        app.get('/destination/:id', vrifyToken, async (req, res) => {
             const id = req.params.id
             const query = {
                 _id: new ObjectId(id)
@@ -78,12 +109,12 @@ const run = async () => {
             res.send(result)
         })
 
-        app.delete('/booking/:bookingId',async(req,res)=>{
-            const {bookingId}=req.params
-            const filter={
-                _id:new ObjectId(bookingId)
+        app.delete('/booking/:bookingId', async (req, res) => {
+            const { bookingId } = req.params
+            const filter = {
+                _id: new ObjectId(bookingId)
             }
-            const result=await wanderlustBooking.deleteOne(filter)
+            const result = await wanderlustBooking.deleteOne(filter)
             res.send(result)
         })
 
