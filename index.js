@@ -96,7 +96,7 @@ const run = async () => {
         })
 
 
-        app.post('/booking', async (req, res) => {
+        app.post('/booking',vrifyToken, async (req, res) => {
             const docs = req.body
 
             const result = await wanderlustBooking.insertOne(docs)
