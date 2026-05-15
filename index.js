@@ -103,7 +103,7 @@ const run = async () => {
             res.send(result)
         })
 
-        app.get('/booking/:userId', async (req, res) => {
+        app.get('/booking/:userId',vrifyToken, async (req, res) => {
             const { userId } = req.params
             const result = await wanderlustBooking.find({ userId: userId }).toArray()
             res.send(result)
