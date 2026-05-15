@@ -61,7 +61,7 @@ const run = async () => {
         const wanderlustBooking = database.collection('booking')
 
 
-        app.post('/destination', async (req, res) => {
+        app.post('/destination',vrifyToken, async (req, res) => {
             const docs = req.body
 
 
