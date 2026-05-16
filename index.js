@@ -73,6 +73,10 @@ const run = async () => {
             const cursor = await wanderlustcollaction.find().toArray()
             res.send(cursor)
         })
+        app.get('/featured', async (req, res) => {
+            const cursor = await wanderlustcollaction.find().limit(5).toArray()
+            res.send(cursor)
+        })
 
         app.get('/destination/:id', vrifyToken, async (req, res) => {
             const id = req.params.id
