@@ -21,7 +21,7 @@ const client = new MongoClient(uri, {
 
 
 const jWKS = createRemoteJWKSet(
-    new URL('http://localhost:3000/api/auth/jwks')
+    new URL(process.env.JWKSUSER_URI)
 )
 
 const vrifyToken = async (req, res, next) => {
@@ -53,8 +53,8 @@ const vrifyToken = async (req, res, next) => {
 const run = async () => {
     try {
 
-        await client.connect();
-        await client.db('admin').command({ ping: 1 })
+        // await client.connect();
+        // await client.db('admin').command({ ping: 1 })
 
         const database = client.db('wanderlust')
         const wanderlustcollaction = database.collection('wanderlustcollaction')
