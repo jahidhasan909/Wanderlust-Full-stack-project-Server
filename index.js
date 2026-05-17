@@ -20,9 +20,7 @@ const client = new MongoClient(uri, {
 });
 
 
-const jWKS = createRemoteJWKSet(
-    new URL(process.env.JWKSUSER_URI)
-)
+const jWKS = createRemoteJWKSet(new URL(process.env.JWKSUSER_URI))
 
 const vrifyToken = async (req, res, next) => {
 
